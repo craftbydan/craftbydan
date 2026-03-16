@@ -302,9 +302,9 @@ body {
 }
 
 .work-arrow {
-  font-size: 1rem;
   color: var(--text-muted);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   transition:
     transform 0.55s var(--ease),
     color 0.45s ease;

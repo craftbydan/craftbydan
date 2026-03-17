@@ -220,6 +220,11 @@ body {
   opacity: 0.65;
 }
 
+.meta-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 
 /* ─────────────────────────────────────────────
    Personal line

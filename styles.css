@@ -11,7 +11,7 @@
   --footer-muted: #a3a3a3;
   --page-pad:     clamp(1.5rem, 7vw, 7rem);
   --grid-gap:     clamp(0.75rem, 2vw, 1.5rem);
-  --font:         "Inter", system-ui, -apple-system, sans-serif;
+  --font:         -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   --ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 

@@ -34,7 +34,6 @@ body {
   font-size: 16px;
   line-height: 1.65;
   letter-spacing: -0.01em;
-  font-feature-settings: "ss01" 1, "cv05" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -203,7 +202,6 @@ button:focus-visible {
 .hero-name {
   font-size: clamp(5.5rem, 22vw, 15rem);
   font-weight: 800;
-  font-optical-sizing: none;
   line-height: 0.9;
   letter-spacing: -0.06em;
   color: var(--text);
@@ -357,7 +355,7 @@ button:focus-visible {
   font-weight: 500;
   color: var(--text-muted);
   line-height: 1.6;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.01em;
   transition: color 0.45s ease;
 }
 
@@ -386,7 +384,7 @@ button:focus-visible {
   font-weight: 500;
   color: var(--footer-muted);
   text-decoration: none;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
   position: relative;
   transition: color 0.45s ease;
 }
@@ -497,6 +495,11 @@ button:focus-visible {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .hero::after {
+    animation: none;
+    opacity: 0;
   }
 
   .js-loaded [data-animate],

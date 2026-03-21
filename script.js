@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Live Bangkok clock ───────────────────────────────────────────────────
+  document.body.classList.replace('no-js', 'js-loaded');
+
   const timeEl = document.getElementById('nav-time');
 
   const updateClock = () => {
@@ -17,20 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateClock, 1000);
 
 
-  // ── Page-load staggered fade-up (nav + hero meta) ────────────────────────
-  // Nav and meta both delay until after the lamp has arrived (~2.4s and ~3.3s)
   const loadElements = document.querySelectorAll('[data-animate]');
 
   loadElements.forEach(el => {
     const index = parseFloat(el.getAttribute('data-delay') ?? '0');
-    el.style.animationDelay = `${index * 0.3}s`;
+    el.style.animationDelay = `${index * 0.18}s`;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => el.classList.add('is-visible'));
     });
   });
 
 
-  // ── Scroll-triggered reveal ──────────────────────────────────────────────
   const scrollObserver = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
@@ -48,16 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // ── Nav frosted glass on scroll ──────────────────────────────────────────
   const nav = document.querySelector('.nav');
   let ticking = false;
 
   const updateNav = () => {
     const scrolled = window.scrollY > 40;
     nav.style.background = scrolled
-      ? 'linear-gradient(to bottom, rgba(11,9,7,0.92) 0%, transparent 100%)'
+      ? 'linear-gradient(to bottom, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0) 100%)'
       : 'transparent';
-    nav.style.backdropFilter = scrolled ? 'blur(14px)' : 'none';
+    nav.style.backdropFilter = scrolled ? 'blur(12px)' : 'none';
     ticking = false;
   };
 

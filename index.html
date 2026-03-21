@@ -3,20 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0B0907">
-  <link rel="icon" href="favicon.ico" sizes="16x16 32x32" type="image/x-icon">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="description" content="Dan — builder, independent thinker.">
   <title>Dan.</title>
 
+  <meta property="og:type"         content="website">
+  <meta property="og:url"          content="https://craftbydan.com">
+  <meta property="og:title"        content="Dan.">
+  <meta property="og:description"  content="Dan — builder, independent thinker.">
+  <meta property="og:image"        content="https://craftbydan.com/og.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Dan.">
+  <meta name="twitter:description" content="Dan — builder, independent thinker.">
+  <meta name="twitter:image"       content="https://craftbydan.com/og.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..400;1,9..144,200..400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="no-js">
 
-  <nav class="nav" data-animate data-delay="5">
+  <nav class="nav" data-animate data-delay="3">
     <a href="/" class="nav-logo">Dan</a>
     <div class="nav-right">
       <span id="nav-time" class="nav-time"></span>
@@ -24,10 +37,10 @@
     </div>
   </nav>
 
-  <section class="hero">
+  <section class="hero" aria-label="Introduction">
     <div class="hero-inner">
       <h1 class="hero-name">Dan</h1>
-      <div class="hero-meta" data-animate data-delay="7">
+      <div class="hero-meta" data-animate data-delay="5">
         <span>13°44'38"N 100°32'29"E</span>
         <span>UTC+7</span>
         <a href="https://reads.craftbydan.com" target="_blank" rel="noopener" class="meta-link"><span>Reading: Hyperfocus</span></a>
@@ -35,29 +48,17 @@
     </div>
   </section>
 
-  <!-- Personal line -->
-  <section class="personal">
+  <section class="intro" aria-label="About">
     <div class="container">
-      <p class="personal-line" data-scroll-animate>
-        I build things before I know how.
-      </p>
+      <img src="avatar.png" alt="Dan" class="avatar" data-scroll-animate>
+      <p class="intro-lead" data-scroll-animate>I build things before I know how.</p>
+      <p class="intro-sub" data-scroll-animate>Based in Bangkok.<br>Building things.</p>
     </div>
   </section>
 
-  <!-- About -->
-  <section class="about">
+  <section class="work" aria-labelledby="now-heading">
     <div class="container">
-      <p class="about-text" data-scroll-animate>
-        Based in Bangkok.<br>
-        Building things.
-      </p>
-    </div>
-  </section>
-
-  <!-- Now -->
-  <section class="work">
-    <div class="container">
-      <span class="section-label" data-scroll-animate>Now</span>
+      <h2 id="now-heading" class="section-label" data-scroll-animate>Now</h2>
       <ul class="work-list">
         <li class="work-item" data-scroll-animate>
           <a href="https://reads.craftbydan.com" class="work-link" target="_blank" rel="noopener">
@@ -87,6 +88,6 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

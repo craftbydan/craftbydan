@@ -4,13 +4,18 @@
   display: none;
 }
 
-.trex-strip {
+.trex-ground {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 700px;
   margin: 0 auto;
-  padding: clamp(1rem, 4vw, 2rem) var(--page-pad) 0;
+  padding: clamp(1.5rem, 5vw, 3rem) var(--page-pad) 0;
   text-align: center;
+}
+
+/* the footer picks up right where the game's ground line ends */
+.trex-ground + .footer {
+  margin-top: 0;
 }
 
 .interstitial-wrapper {
@@ -40,9 +45,6 @@
   left: 0;
   z-index: 2;
   image-rendering: pixelated;
-  /* the sprite is drawn dark-on-transparent for a light page;
-     invert it so it reads on the footer's dark ground */
-  filter: invert(1);
 }
 
 .controller {
@@ -56,8 +58,8 @@
 }
 
 .trex-hint {
-  margin-top: 0.5rem;
-  color: var(--footer-muted, #a3a3a3);
+  margin-bottom: 0.75rem;
+  color: var(--text-muted, #737373);
   font-size: 0.75rem;
   letter-spacing: 0.02em;
 }
@@ -65,7 +67,7 @@
 .trex-hint kbd {
   display: inline-block;
   padding: 0.1em 0.45em;
-  border: 1px solid rgba(250, 250, 250, 0.25);
+  border: 1px solid var(--border, #e8e8e8);
   border-radius: 4px;
   font-family: inherit;
   font-size: 0.7rem;

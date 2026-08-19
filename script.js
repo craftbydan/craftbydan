@@ -49,15 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // The game's keydown listener is document-wide once instantiated (it's
   // how the real Chrome dino works), so only wake it up once the footer's
   // ground strip has actually scrolled into view.
-  const trexStrip = document.querySelector('.trex-strip');
-  if (trexStrip) {
+  const trexGround = document.querySelector('.trex-ground');
+  if (trexGround) {
     const trexObserver = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
         new window.Runner('.interstitial-wrapper');
         trexObserver.disconnect();
       }
     }, { threshold: 0.3 });
-    trexObserver.observe(trexStrip);
+    trexObserver.observe(trexGround);
   }
 
 

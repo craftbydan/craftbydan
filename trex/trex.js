@@ -79,7 +79,7 @@
      * Default game width.
      * @const
      */
-    var DEFAULT_WIDTH = 600;
+    var DEFAULT_WIDTH = 2400; // raised from the original 600 so the track can run edge-to-edge
 
     /**
      * Frames per second.

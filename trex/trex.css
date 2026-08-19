@@ -7,10 +7,13 @@
 .trex-ground {
   position: relative;
   width: 100%;
-  max-width: 700px;
   margin: 0 auto;
-  padding: clamp(1.5rem, 5vw, 3rem) var(--page-pad) 0;
+  padding-top: clamp(1.5rem, 5vw, 3rem);
   text-align: center;
+}
+
+.trex-ground .trex-hint {
+  padding: 0 var(--page-pad);
 }
 
 /* the footer picks up right where the game's ground line ends */
@@ -20,23 +23,18 @@
 
 .interstitial-wrapper {
   position: relative;
-  margin: 0 auto;
   width: 100%;
-  max-width: 600px;
 }
 
 .runner-container {
   height: 150px;
-  max-width: 600px;
   width: 100%;
   overflow: hidden;
   position: relative;
-  margin: 0 auto;
 }
 
 .runner-canvas {
   height: 150px;
-  max-width: 100%;
   width: 100%;
   opacity: 1;
   overflow: hidden;
@@ -71,11 +69,4 @@
   border-radius: 4px;
   font-family: inherit;
   font-size: 0.7rem;
-}
-
-@media (max-width: 600px) {
-  .runner-container,
-  .interstitial-wrapper {
-    max-width: 100%;
-  }
 }

@@ -46,6 +46,37 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
+  const trexOverlay = document.getElementById('trex-overlay');
+  const trexTrigger = document.getElementById('trex-trigger');
+  const trexClose = document.getElementById('trex-close');
+  let trexRunner = null;
+
+  const openTrex = () => {
+    trexOverlay.hidden = false;
+    requestAnimationFrame(() => trexOverlay.classList.add('is-open'));
+    if (trexRunner) {
+      trexRunner.play();
+    } else {
+      trexRunner = new window.Runner('.interstitial-wrapper');
+    }
+  };
+
+  const closeTrex = () => {
+    trexOverlay.classList.remove('is-open');
+    if (trexRunner) trexRunner.stop();
+    setTimeout(() => { trexOverlay.hidden = true; }, 250);
+  };
+
+  trexTrigger?.addEventListener('click', openTrex);
+  trexClose?.addEventListener('click', closeTrex);
+  trexOverlay?.addEventListener('click', e => {
+    if (e.target === trexOverlay) closeTrex();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && trexOverlay && !trexOverlay.hidden) closeTrex();
+  });
+
+
   const nav = document.querySelector('.nav');
   let ticking = false;
 

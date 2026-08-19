@@ -681,6 +681,14 @@
             if (e.target != this.detailsButton) {
                 if (!this.crashed && (Runner.keycodes.JUMP[e.keyCode] ||
                     e.type == Runner.events.TOUCHSTART)) {
+                    // Upstream never prevents this: on Chrome's real offline
+                    // page there's nothing to scroll. Embedded in a normal
+                    // page, Space's native "scroll down a screen" action
+                    // would otherwise yank the whole page to the bottom
+                    // every time you jump.
+                    if (Runner.keycodes.JUMP[e.keyCode]) {
+                        e.preventDefault();
+                    }
                     if (!this.playing) {
                         this.loadSounds();
                         this.playing = true;
@@ -848,29 +856,19 @@
          * Hides offline messaging for a fullscreen game only experience.
          */
         setArcadeMode() {
-            document.body.classList.add(Runner.classes.ARCADE_MODE);
-            this.setArcadeModeContainerScale();
+            // Upstream fullscreens the game (scale + translateY transform
+            // pinned to the viewport) since it's Chrome's own offline page.
+            // Here the game is embedded in normal page flow above the
+            // footer, so arcade mode is disabled — starting the game must
+            // not move the canvas.
         },
 
         /**
          * Sets the scaling for arcade mode.
          */
         setArcadeModeContainerScale() {
-            const windowHeight = window.innerHeight;
-            const scaleHeight = windowHeight / this.dimensions.HEIGHT;
-            const scaleWidth = window.innerWidth / this.dimensions.WIDTH;
-            const scale = Math.max(1, Math.min(scaleHeight, scaleWidth));
-            const scaledCanvasHeight = this.dimensions.HEIGHT * scale;
-            // Positions the game container at 10% of the available vertical window
-            // height minus the game container height.
-            const translateY = Math.ceil(Math.max(0, (windowHeight - scaledCanvasHeight -
-                                                      Runner.config.ARCADE_MODE_INITIAL_TOP_POSITION) *
-                                                  Runner.config.ARCADE_MODE_TOP_POSITION_PERCENT)) *
-                  window.devicePixelRatio;
-
-            const cssScale = scale;
-            this.containerEl.style.transform =
-                'scale(' + cssScale + ') translateY(' + translateY + 'px)';
+            // Disabled — see setArcadeMode() above. Left as a no-op rather
+            // than deleted since adjustDimensions() still calls it on resize.
         },
         
         /**
@@ -2404,14 +2402,17 @@
      * @param {Object} spritePos Horizon position in sprite.
      * @constructor
      */
-    function HorizonLine(canvas, spritePos) {
+    function HorizonLine(canvas, spritePos, canvasWidth) {
         this.spritePos = spritePos;
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.sourceDimensions = {};
         this.dimensions = HorizonLine.dimensions;
-        this.sourceXPos = [this.spritePos.x, this.spritePos.x +
-            this.dimensions.WIDTH];
+        // Upstream assumes a canvas no wider than two 600px tiles (1200px).
+        // This track runs edge-to-edge, so tile the ground with as many
+        // segments as needed to cover the full width instead.
+        this.canvasWidth = canvasWidth || this.dimensions.WIDTH;
+        this.sourceXPos = [];
         this.xPos = [];
         this.yPos = 0;
         this.bumpThreshold = 0.5;
@@ -2451,7 +2452,15 @@
                 this.dimensions[dimension] = HorizonLine.dimensions[dimension];
             }
 
-            this.xPos = [0, HorizonLine.dimensions.WIDTH];
+            var tileWidth = this.dimensions.WIDTH;
+            var tileCount = Math.max(2, Math.ceil(this.canvasWidth / tileWidth) + 1);
+            this.xPos = [];
+            this.sourceXPos = [];
+            for (var i = 0; i < tileCount; i++) {
+                this.xPos.push(i * tileWidth);
+                this.sourceXPos.push(this.spritePos.x +
+                    (i < 2 ? i * tileWidth : this.getRandomType()));
+            }
             this.yPos = HorizonLine.dimensions.YPOS;
         },
 
@@ -2463,38 +2472,16 @@
         },
 
         /**
-         * Draw the horizon line.
+         * Draw the horizon line — one tile per entry in xPos, enough to
+         * span the full (possibly edge-to-edge) canvas width.
          */
         draw: function () {
-            this.canvasCtx.drawImage(Runner.imageSprite, this.sourceXPos[0],
-                this.spritePos.y,
-                this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT,
-                this.xPos[0], this.yPos,
-                this.dimensions.WIDTH, this.dimensions.HEIGHT);
-
-            this.canvasCtx.drawImage(Runner.imageSprite, this.sourceXPos[1],
-                this.spritePos.y,
-                this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT,
-                this.xPos[1], this.yPos,
-                this.dimensions.WIDTH, this.dimensions.HEIGHT);
-        },
-
-        /**
-         * Update the x position of an indivdual piece of the line.
-         * @param {number} pos Line position.
-         * @param {number} increment
-         */
-        updateXPos: function (pos, increment) {
-            var line1 = pos;
-            var line2 = pos == 0 ? 1 : 0;
-
-            this.xPos[line1] -= increment;
-            this.xPos[line2] = this.xPos[line1] + this.dimensions.WIDTH;
-
-            if (this.xPos[line1] <= -this.dimensions.WIDTH) {
-                this.xPos[line1] += this.dimensions.WIDTH * 2;
-                this.xPos[line2] = this.xPos[line1] - this.dimensions.WIDTH;
-                this.sourceXPos[line1] = this.getRandomType() + this.spritePos.x;
+            for (var i = 0; i < this.xPos.length; i++) {
+                this.canvasCtx.drawImage(Runner.imageSprite, this.sourceXPos[i],
+                    this.spritePos.y,
+                    this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT,
+                    this.xPos[i], this.yPos,
+                    this.dimensions.WIDTH, this.dimensions.HEIGHT);
             }
         },
 
@@ -2505,11 +2492,19 @@
          */
         update: function (deltaTime, speed) {
             var increment = Math.floor(speed * (FPS / 1000) * deltaTime);
+            var tileWidth = this.dimensions.WIDTH;
+            var maxXPos = Math.max.apply(Math, this.xPos);
 
-            if (this.xPos[0] <= 0) {
-                this.updateXPos(0, increment);
-            } else {
-                this.updateXPos(1, increment);
+            for (var i = 0; i < this.xPos.length; i++) {
+                this.xPos[i] -= increment;
+
+                // Once a tile scrolls fully off the left edge, recycle it
+                // onto the right end of the line with a new random variant.
+                if (this.xPos[i] <= -tileWidth) {
+                    maxXPos += tileWidth;
+                    this.xPos[i] = maxXPos;
+                    this.sourceXPos[i] = this.getRandomType() + this.spritePos.x;
+                }
             }
             this.draw();
         },
@@ -2518,8 +2513,10 @@
          * Reset horizon to the starting position.
          */
         reset: function () {
-            this.xPos[0] = 0;
-            this.xPos[1] = HorizonLine.dimensions.WIDTH;
+            var tileWidth = HorizonLine.dimensions.WIDTH;
+            for (var i = 0; i < this.xPos.length; i++) {
+                this.xPos[i] = i * tileWidth;
+            }
         }
     };
 
@@ -2576,7 +2573,8 @@
          */
         init: function () {
             this.addCloud();
-            this.horizonLine = new HorizonLine(this.canvas, this.spritePos.HORIZON);
+            this.horizonLine = new HorizonLine(this.canvas, this.spritePos.HORIZON,
+                this.dimensions.WIDTH);
             this.nightMode = new NightMode(this.canvas, this.spritePos.MOON,
                 this.dimensions.WIDTH);
         },

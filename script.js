@@ -46,35 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  const trexOverlay = document.getElementById('trex-overlay');
-  const trexTrigger = document.getElementById('trex-trigger');
-  const trexClose = document.getElementById('trex-close');
-  let trexRunner = null;
-
-  const openTrex = () => {
-    trexOverlay.hidden = false;
-    requestAnimationFrame(() => trexOverlay.classList.add('is-open'));
-    if (trexRunner) {
-      trexRunner.play();
-    } else {
-      trexRunner = new window.Runner('.interstitial-wrapper');
-    }
-  };
-
-  const closeTrex = () => {
-    trexOverlay.classList.remove('is-open');
-    if (trexRunner) trexRunner.stop();
-    setTimeout(() => { trexOverlay.hidden = true; }, 250);
-  };
-
-  trexTrigger?.addEventListener('click', openTrex);
-  trexClose?.addEventListener('click', closeTrex);
-  trexOverlay?.addEventListener('click', e => {
-    if (e.target === trexOverlay) closeTrex();
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && trexOverlay && !trexOverlay.hidden) closeTrex();
-  });
+  // The game's keydown listener is document-wide once instantiated (it's
+  // how the real Chrome dino works), so only wake it up once the footer's
+  // ground strip has actually scrolled into view.
+  const trexStrip = document.querySelector('.trex-strip');
+  if (trexStrip) {
+    const trexObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        new window.Runner('.interstitial-wrapper');
+        trexObserver.disconnect();
+      }
+    }, { threshold: 0.3 });
+    trexObserver.observe(trexStrip);
+  }
 
 
   const nav = document.querySelector('.nav');

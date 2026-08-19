@@ -43,6 +43,13 @@
   left: 0;
   z-index: 2;
   image-rendering: pixelated;
+  transition: filter 0.5s ease;
+}
+
+/* The game flips into "night mode" a little way into a run — scoped to
+   just the canvas so it doesn't invert the rest of the page. */
+body.inverted .runner-canvas {
+  filter: invert(1);
 }
 
 .controller {

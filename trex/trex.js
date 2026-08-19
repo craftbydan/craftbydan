@@ -82,6 +82,17 @@
     var DEFAULT_WIDTH = 2400; // raised from the original 600 so the track can run edge-to-edge
 
     /**
+     * The original DEFAULT_WIDTH (600). Upstream tuned mobile-speed
+     * scaling and obstacle spawn distance around a canvas this wide.
+     * DEFAULT_WIDTH now caps the much wider edge-to-edge canvas instead,
+     * so those two things use this reference width so raising it doesn't
+     * also slow the game down or push the first obstacle off into the
+     * distance on every normal-sized screen.
+     * @const
+     */
+    var PACING_REFERENCE_WIDTH = 600;
+
+    /**
      * Frames per second.
      * @const
      */
@@ -104,7 +115,9 @@
      * @enum {number}
      */
     Runner.config = {
-        ACCELERATION: 0.001,
+        // Tuned up from Chrome's stock values (ACCELERATION 0.001, MAX_SPEED
+        // 13, INVERT_DISTANCE 700, SPEED 6) for a livelier, snappier feel.
+        ACCELERATION: 0.0018,
         BG_CLOUD_SPEED: 0.2,
         BOTTOM_PAD: 10,
         CLEAR_TIME: 3000,
@@ -114,16 +127,16 @@
         GRAVITY: 0.6,
         INITIAL_JUMP_VELOCITY: 12,
         INVERT_FADE_DURATION: 12000,
-        INVERT_DISTANCE: 700,
+        INVERT_DISTANCE: 350,
         MAX_BLINK_COUNT: 3,
         MAX_CLOUDS: 6,
         MAX_OBSTACLE_LENGTH: 3,
         MAX_OBSTACLE_DUPLICATION: 2,
-        MAX_SPEED: 13,
+        MAX_SPEED: 16,
         MIN_JUMP_HEIGHT: 35,
         MOBILE_SPEED_COEFFICIENT: 1.2,
         RESOURCE_TEMPLATE_ID: 'audio-resources',
-        SPEED: 6,
+        SPEED: 7,
         SPEED_DROP_COEFFICIENT: 3,
         ARCADE_MODE_INITIAL_TOP_POSITION: 35,
         ARCADE_MODE_TOP_POSITION_PERCENT: 0.1
@@ -339,8 +352,8 @@
             var speed = opt_speed || this.currentSpeed;
 
             // Reduce the speed on smaller mobile screens.
-            if (this.dimensions.WIDTH < DEFAULT_WIDTH) {
-                var mobileSpeed = speed * this.dimensions.WIDTH / DEFAULT_WIDTH *
+            if (this.dimensions.WIDTH < PACING_REFERENCE_WIDTH) {
+                var mobileSpeed = speed * this.dimensions.WIDTH / PACING_REFERENCE_WIDTH *
                     this.config.MOBILE_SPEED_COEFFICIENT;
                 this.currentSpeed = mobileSpeed > speed ? speed : mobileSpeed;
             } else if (opt_speed) {
@@ -1285,7 +1298,10 @@
         this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH);
         this.dimensions = dimensions;
         this.remove = false;
-        this.xPos = dimensions.WIDTH + (opt_xOffset || 0);
+        // Spawn just past the pacing reference width, not the far edge of
+        // the (possibly much wider) edge-to-edge canvas — otherwise every
+        // obstacle spawns off in the distance and takes ages to arrive.
+        this.xPos = Math.min(dimensions.WIDTH, PACING_REFERENCE_WIDTH) + (opt_xOffset || 0);
         this.yPos = 0;
         this.width = 0;
         this.collisionBoxes = [];
@@ -2653,10 +2669,14 @@
             if (this.obstacles.length > 0) {
                 var lastObstacle = this.obstacles[this.obstacles.length - 1];
 
+                // Compare against the same pacing reference width used to
+                // spawn obstacles (see Obstacle's constructor) rather than
+                // the full edge-to-edge canvas, so the gating still kicks
+                // in at the original distance instead of near-instantly.
                 if (lastObstacle && !lastObstacle.followingObstacleCreated &&
                     lastObstacle.isVisible() &&
                     (lastObstacle.xPos + lastObstacle.width + lastObstacle.gap) <
-                    this.dimensions.WIDTH) {
+                    Math.min(this.dimensions.WIDTH, PACING_REFERENCE_WIDTH)) {
                     this.addNewObstacle(currentSpeed);
                     lastObstacle.followingObstacleCreated = true;
                 }

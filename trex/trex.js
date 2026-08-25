@@ -105,7 +105,8 @@
     var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
 
     /** @const */
-    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
+    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS ||
+        window.navigator.maxTouchPoints > 0;
 
     /** @const */
     var IS_TOUCH_ENABLED = 'ontouchstart' in window;
@@ -229,7 +230,7 @@
      * @enum {string}
      */
     Runner.events = {
-        ANIM_END: 'webkitAnimationEnd',
+        ANIM_END: 'animationend',
         CLICK: 'click',
         KEYDOWN: 'keydown',
         KEYUP: 'keyup',
@@ -484,7 +485,10 @@
                 this.tRex.playingIntro = true;
 
                 // CSS animation definition.
-                var keyframes = '@-webkit-keyframes intro { ' +
+                var keyframes = '@keyframes intro { ' +
+                    'from { width:' + Trex.config.WIDTH + 'px }' +
+                    'to { width: ' + this.dimensions.WIDTH + 'px }' +
+                    '} @-webkit-keyframes intro { ' +
                     'from { width:' + Trex.config.WIDTH + 'px }' +
                     'to { width: ' + this.dimensions.WIDTH + 'px }' +
                     '}';
@@ -495,10 +499,15 @@
                 sheet.innerHTML = keyframes;
                 document.head.appendChild(sheet);
 
+                var startGame = this.startGame.bind(this);
                 this.containerEl.addEventListener(Runner.events.ANIM_END,
-                    this.startGame.bind(this));
+                    startGame, { once: true });
+                this.containerEl.addEventListener('webkitAnimationEnd',
+                    startGame, { once: true });
 
+                this.containerEl.style.animation = 'intro .4s ease-out 1 both';
                 this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both';
+                this.introTimer_ = setTimeout(startGame, 500);
                 this.containerEl.style.width = this.dimensions.WIDTH + 'px';
 
                 // if (this.touchController) {
@@ -516,10 +525,17 @@
          * Update the game status to started.
          */
         startGame: function () {
+            if (!this.playingIntro) {
+                return;
+            }
+
+            clearTimeout(this.introTimer_);
+            this.introTimer_ = null;
             this.setArcadeMode();
             this.runningTime = 0;
             this.playingIntro = false;
             this.tRex.playingIntro = false;
+            this.containerEl.style.animation = '';
             this.containerEl.style.webkitAnimation = '';
             this.playCount++;
 

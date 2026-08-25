@@ -54,11 +54,11 @@ body.inverted .runner-canvas {
 
 .controller {
   background: rgba(247, 247, 247, .1);
-  height: 100vh;
+  height: 150px;
   left: 0;
   position: absolute;
   top: 0;
-  width: 100vw;
+  width: 100%;
   z-index: 1;
 }
 

@@ -314,6 +314,15 @@ button:focus-visible {
   color: var(--text);
 }
 
+.work-icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.5em;
+  border-radius: 24%;
+  vertical-align: -0.2em;
+}
+
 .work-arrow {
   color: var(--text-muted);
   display: inline-flex;

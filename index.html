@@ -2,25 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#f3d6c4" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1d2340" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#c9c4dc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161b36" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta name="description" content="Dan — builder, independent thinker.">
+  <meta name="description" content="Dan — a student in Bangkok who builds side projects after school, like PeakRead and Reads.">
   <title>Dan.</title>
+  <link rel="canonical" href="https://www.craftbydan.com/">
 
   <meta property="og:type"         content="website">
-  <meta property="og:url"          content="https://craftbydan.com">
+  <meta property="og:url"          content="https://www.craftbydan.com/">
   <meta property="og:title"        content="Dan.">
-  <meta property="og:description"  content="Dan — builder, independent thinker.">
-  <meta property="og:image"        content="https://craftbydan.com/og.png">
+  <meta property="og:description"  content="A student in Bangkok who builds side projects after school.">
+  <meta property="og:image"        content="https://www.craftbydan.com/og.png">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:title"       content="Dan.">
-  <meta name="twitter:description" content="Dan — builder, independent thinker.">
-  <meta name="twitter:image"       content="https://craftbydan.com/og.png">
+  <meta name="twitter:description" content="A student in Bangkok who builds side projects after school.">
+  <meta name="twitter:image"       content="https://www.craftbydan.com/og.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..900&display=swap" rel="stylesheet">
@@ -93,16 +95,29 @@
 
     /* ── Words on the riverbank, standing where a temple would ── */
     .bank {
+      text-align: center;
+      color: var(--ink);
+      text-shadow: 0 0 0.4em var(--halo), 0 0 1.2em var(--halo-2);
+      padding: 3.5rem 16px;
+    }
+    .js .bank {
       position: fixed;
       left: 0; top: 0;
       width: max-content;
       max-width: min(90vw, 64rem);
-      text-align: center;
-      color: var(--ink);
-      text-shadow: 0 0 0.4em var(--halo), 0 0 1.2em var(--halo-2);
+      padding: 0;
       will-change: transform;
       visibility: hidden;
     }
+
+    /* Without JavaScript there's no river: just the words, one after another. */
+    html:not(.js) .track, html:not(.js) #scene, html:not(.js) .sky { display: none; }
+    html:not(.js) body { padding: 10vh 0; }
+    html:not(.js) h1.sr {
+      position: static; width: auto; height: auto; clip: auto;
+      text-align: center; font-size: clamp(4rem, 18vw, 9rem); font-weight: 800; letter-spacing: -0.06em;
+    }
+
     .bank-inner { padding-bottom: 0.5rem; }
     .bank .label {
       display: block;
@@ -123,7 +138,7 @@
     .bank p {
       max-width: 34ch;
       margin: 0.7rem auto 0;
-      font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+      font-size: clamp(0.95rem, 1.2vw, 1.05rem);
       line-height: 1.5;
       font-weight: 500;
       color: var(--body);
@@ -170,7 +185,7 @@
   <h1 class="sr">Dan</h1>
   <span class="font-warm" aria-hidden="true">Dan</span>
 
-  <section class="bank">
+  <section data-stop="about" class="bank">
     <div class="bank-inner">
       <span class="label">About me</span>
       <h2>School first,<br>side projects after.</h2>
@@ -178,7 +193,7 @@
     </div>
   </section>
 
-  <section class="bank">
+  <section data-stop="where" class="bank">
     <div class="bank-inner">
       <span class="label">Where</span>
       <h2>Bangkok.</h2>
@@ -186,7 +201,7 @@
     </div>
   </section>
 
-  <section class="bank">
+  <section data-stop="outside" class="bank">
     <div class="bank-inner">
       <span class="label">Outside school</span>
       <h2>Two wheels<br>and four.</h2>
@@ -194,7 +209,7 @@
     </div>
   </section>
 
-  <section class="bank">
+  <section data-stop="now" class="bank">
     <div class="bank-inner">
       <span class="label">Now</span>
       <h2><a href="https://peakread.craftbydan.com" target="_blank" rel="noopener">PeakRead ↗</a><br><a href="https://reads.craftbydan.com" target="_blank" rel="noopener">Reads ↗</a></h2>
@@ -202,11 +217,11 @@
     </div>
   </section>
 
-  <section class="bank long">
+  <section data-stop="say-hi" class="bank long">
     <div class="bank-inner">
       <span class="label">Say hi</span>
       <h2><a href="mailto:dan@craftbydan.com">dan@craftbydan.com</a></h2>
-      <p><a href="https://github.com/craftbydan" target="_blank" rel="noopener">GitHub</a> · <a href="https://twitter.com/craftbydan" target="_blank" rel="noopener">Twitter</a></p>
+      <p><a href="https://github.com/craftbydan" target="_blank" rel="noopener">GitHub</a> · <a href="https://x.com/craftbydan" target="_blank" rel="noopener">X</a></p>
     </div>
   </section>
 
@@ -251,6 +266,8 @@
     document.documentElement.dataset.theme = mode();
     const btn = document.getElementById('sky');
     if (btn) btn.setAttribute('aria-label', mode() === 'dark' ? 'Tap the moon to bring back the dawn' : 'Tap the sun to bring on the night');
+    // the browser's own bar matches the top of whichever sky is showing, toggle included
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => (m.content = THEME.SKY[0]));
     ({ INK, TEMPLE, GOLD, GLOW, SKY, WATER_TOP, WATER_BOT, RIPPLE, RIPPLE_DARK, FAR, NEAR,
        TEAK, TEAK_LIGHT, TEAK_DARK, LETTER, LETTER_SIDE, WINDOW, BULBS } = THEME);
   }
@@ -279,7 +296,7 @@
 
   let W, H, DPR, u, tu, bankY, waterY, boatL, S, travel, layers = [], rows = [], sizes = [];
   let festoons = [], bg = null, waterGrad = null, lastW = 0, lastH = 0;
-  let target = 0, current = 0, pitch = 0, lastCam = 0;
+  let target = 0, current = 0, pitch = 0, lastCam = 0, ready = false, dirty = true, tick = 0;
 
   const rng = (seed) => () => {
     seed = (seed + 0x6D2B79F5) | 0;
@@ -639,6 +656,11 @@
   }
 
   function build() {
+    // A background tab or a hidden frame can report a 0×0 window. There's nothing to draw
+    // yet, and a 0px canvas would throw, so wait until the window has a size.
+    ready = innerWidth > 0 && innerHeight > 0;
+    if (!ready) return;
+    dirty = true;
     W = innerWidth; H = innerHeight; lastW = W; lastH = H;
     // Retina, but capped so a big screen never pushes more than ~4.2M pixels a frame.
     DPR = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(4.2e6 / (W * H)));
@@ -985,41 +1007,55 @@
     c.stroke();
   }
 
-  // The texts ride along with the bank, exactly like the temples.
+  // The texts ride along with the bank, exactly like the temples. They're never hidden once
+  // placed: off-screen ones just wait further down the bank, so screen readers and Tab still reach them.
   function place(cam) {
     banks.forEach((el, i) => {
       const { w, h } = sizes[i];
       const x = S * (i + 1) + W / 2 - cam - w / 2;
-      const on = x < W && x + w > 0;
-      el.style.visibility = on ? 'visible' : 'hidden';
-      if (on) el.style.transform = `translate3d(${x.toFixed(1)}px, ${bankY - h + 1}px, 0)`;
+      el.style.transform = `translate3d(${x.toFixed(1)}px, ${bankY - h + 1}px, 0)`;
+      el.style.visibility = 'visible';
     });
   }
 
-  let last = performance.now();
+  let last = performance.now(), failed = false;
   function frame(now) {
+    requestAnimationFrame(frame);                         // first, so one bad frame can't stop the river
+    if (!ready) { build(); if (!ready) return; jumpTo(settled); current = target; lastCam = camFor(current); }
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const moving = Math.abs(target - current) > 1e-4;
     current = reduce ? target : current + (target - current) * (1 - Math.pow(0.002, dt));
     const cam = camFor(current);
     const vel = (cam - lastCam) / Math.max(dt, 0.001) / 60;
     lastCam = cam;
     stepSwap(now);
     hover += (hoverTo - hover) * (1 - Math.pow(0.001, dt));
-    render(cam, now / 1000, vel);
-    if (fade > 0) {
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.globalAlpha = fade;
-      ctx.drawImage(snapshot, 0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 1;
+    // Resting: with reduced motion nothing moves, so don't redraw at all; otherwise the boat
+    // only bobs, and half the frame rate is plenty for that.
+    const busy = moving || swap || fade > 0 || Math.abs(hoverTo - hover) > 0.005;
+    tick++;
+    if (!busy && !dirty && (reduce || tick % 2)) return;
+    dirty = false;
+    try {
+      render(cam, now / 1000, vel);
+      if (fade > 0) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = fade;
+        ctx.drawImage(snapshot, 0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+      }
+      place(cam);
+    } catch (err) {
+      if (!failed) { failed = true; console.error(err); }
+      dirty = true;
     }
-    place(cam);
-    requestAnimationFrame(frame);
   }
 
   // ── Magnet: when scrolling stops, the boat is pulled to a text. Never left in between.
   // Any real push carries on to the next stop in that direction; a tiny nudge springs back.
-  let lastY = 0, dir = 0, idle = 0, snapping = false, settled = 0, resized = false;
+  let lastY = 0, dir = 0, idle = 0, snapping = false, settled = 0, resized = false, shown = -1;
   const maxScroll = () => document.documentElement.scrollHeight - innerHeight;
+  const yFor = (stop) => Math.round((maxScroll() * stop) / (STOPS - 1));
 
   function snap() {
     const max = maxScroll();
@@ -1030,11 +1066,40 @@
     if (dir < 0 && frac < 0.92) stop = base;
     stop = clamp(stop, 0, STOPS - 1);
     settled = stop;
-    const y = Math.round((max * stop) / (STOPS - 1));
+    const y = yFor(stop);
     if (Math.abs(y - scrollY) < 2) { snapping = false; return; }
     snapping = true;
     scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
   }
+
+  // Sail straight to a stop (a focused link).
+  function goTo(stop) {
+    if (maxScroll() <= 0) return;
+    settled = stop; dir = 0;
+    const y = yFor(stop);
+    if (Math.abs(y - scrollY) < 2) return;
+    snapping = true;
+    scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
+  // Jump there with no sailing, and without it counting as the visitor's scroll.
+  function jumpTo(stop) {
+    settled = stop; resized = true;
+    scrollTo(0, yFor(stop));
+    onScroll();
+  }
+
+  // The address says which text you're at, so it can be linked to.
+  function show(stop) {
+    shown = stop;
+    try { history.replaceState(null, '', stop ? '#' + banks[stop - 1].dataset.stop : location.pathname + location.search); } catch (e) {}
+  }
+
+  // Tabbing into a text that's still down the bank sails there, so what has focus is on screen.
+  // (A tick later: focusing does its own scroll-into-view, which would cancel ours.)
+  banks.forEach((el, i) => el.addEventListener('focusin', () => {
+    if (settled !== i + 1) setTimeout(() => goTo(i + 1), 0);
+  }));
 
   function onScroll() {
     const max = maxScroll();
@@ -1042,6 +1107,8 @@
     if (resized) { resized = false; dir = 0; }
     else if (!snapping && scrollY !== lastY) dir = Math.sign(scrollY - lastY);
     lastY = scrollY;
+    const near = Math.round(target * (STOPS - 1));
+    if (near !== shown) show(near);
     clearTimeout(idle);
     idle = setTimeout(snap, 140);   // idempotent: once we're resting on a stop it does nothing
   }
@@ -1051,9 +1118,11 @@
     document.querySelectorAll('.bkk-time').forEach((el) => (el.textContent = time));
   }
 
+  // Open on the text the address names (#now, #say-hi…), or at the start. These are data-stop
+  // names, not ids, so the browser doesn't also try to jump to an anchor of its own.
+  settled = banks.findIndex((b) => '#' + b.dataset.stop === location.hash) + 1;
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  scrollTo(0, 0);
-  addEventListener('load', () => scrollTo(0, 0));
+  addEventListener('load', () => { if (ready) jumpTo(settled); });
   addEventListener('scroll', onScroll, { passive: true });
   darkQuery.addEventListener('change', () => { if (!chosen) { applyTheme(); build(); onScroll(); } });
   let resizing = 0;
@@ -1063,15 +1132,17 @@
     resized = true; dir = 0;
     clearTimeout(resizing);
     resizing = setTimeout(() => {
+      if (!ready) return;                               // the next frame builds it
       if (innerWidth !== lastW || Math.abs(innerHeight - lastH) > 120) build();
-      resized = true;                                   // the scroll this causes isn't the visitor's either
-      scrollTo(0, Math.round((maxScroll() * settled) / (STOPS - 1)));
+      dirty = true;
+      jumpTo(settled);
       target = settled / (STOPS - 1);
     }, 150);
   });
   clock(); setInterval(clock, 30000);
-  build(); onScroll(); current = target; lastCam = camFor(current);
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { build(); onScroll(); });
+  build();
+  if (ready) { jumpTo(settled); current = target; lastCam = camFor(current); }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { if (ready) { build(); onScroll(); } });
   requestAnimationFrame(frame);
 })();
 </script>

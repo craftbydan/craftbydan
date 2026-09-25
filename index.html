@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f3d6c4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1d2340" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="description" content="Dan — builder, independent thinker.">
@@ -20,108 +21,1059 @@
   <meta name="twitter:title"       content="Dan.">
   <meta name="twitter:description" content="Dan — builder, independent thinker.">
   <meta name="twitter:image"       content="https://craftbydan.com/og.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #f6dcc8;
+      --ink:    #2b1e1f;
+      --temple: #5a3838;
+      --muted:  #8b6c63;
+      --label:  #5e4744;
+      --body:   #45332f;
+      --halo:   rgba(251, 229, 205, 0.95);
+      --halo-2: rgba(251, 229, 205, 0.8);
+      --font:   -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg:     #1d2340;
+        --ink:    #f6e7d4;
+        --temple: #2a1f2a;
+        --muted:  #b9a39a;
+        --label:  #d7b48e;
+        --body:   #e6d3c1;
+        --halo:   rgba(24, 24, 46, 0.9);
+        --halo-2: rgba(24, 24, 46, 0.75);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg:     #1d2340;
+      --ink:    #f6e7d4;
+      --temple: #2a1f2a;
+      --muted:  #b9a39a;
+      --label:  #d7b48e;
+      --body:   #e6d3c1;
+      --halo:   rgba(24, 24, 46, 0.9);
+      --halo-2: rgba(24, 24, 46, 0.75);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scrollbar-width: none; color-scheme: light dark; }
+    html::-webkit-scrollbar { display: none; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      font-weight: 450;
+      letter-spacing: -0.01em;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: #e8a95f; color: #1d2340; }
 
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="trex/trex.css">
+    .track { height: var(--track, 700vh); }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .sr {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .font-warm { position: absolute; visibility: hidden; font: 800 20px "Inter"; }
+
+    /* ── Words on the riverbank, standing where a temple would ── */
+    .bank {
+      position: fixed;
+      left: 0; top: 0;
+      width: max-content;
+      max-width: min(90vw, 64rem);
+      text-align: center;
+      color: var(--ink);
+      text-shadow: 0 0 0.4em var(--halo), 0 0 1.2em var(--halo-2);
+      will-change: transform;
+      visibility: hidden;
+    }
+    .bank-inner { padding-bottom: 0.5rem; }
+    .bank .label {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--label);
+      margin-bottom: 0.6rem;
+    }
+    .bank h2 {
+      font-size: clamp(2.6rem, 9.5vw, 6.5rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.055em;
+    }
+    .bank.long h2 { font-size: clamp(1.9rem, 7.2vw, 5rem); }
+    .bank p {
+      max-width: 34ch;
+      margin: 0.7rem auto 0;
+      font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+      line-height: 1.5;
+      font-weight: 500;
+      color: var(--body);
+    }
+    .bank a { color: inherit; text-decoration: none; }
+    .bank, .bank h2, .bank p, .bank .label { transition: color 0.9s ease, text-shadow 0.9s ease; }
+
+    /* The sun (or moon) is the switch: an invisible button that follows it around. */
+    .sky {
+      position: fixed;
+      left: 0; top: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      will-change: transform;
+    }
+    .sky:focus-visible { outline: 1.5px dashed var(--label); outline-offset: 4px; }
+    .bank a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.12em; }
+    .fill { border-bottom: 1.5px dashed currentColor; padding: 0 0.1em; }
+
+    /* its reflection, squashed and broken into ripples */
+    .bank .mirror {
+      position: absolute;
+      left: 0; right: 0; top: 100%;
+      transform-origin: 50% 0;
+      transform: scaleY(-0.55);
+      opacity: 0.12;
+      text-shadow: none;
+      pointer-events: none;
+      user-select: none;
+      -webkit-mask-image: repeating-linear-gradient(to bottom, #000 0 2px, transparent 2px 4px);
+              mask-image: repeating-linear-gradient(to bottom, #000 0 2px, transparent 2px 4px);
+    }
+    .bank .mirror .label, .bank .mirror p { visibility: hidden; }
+
+  </style>
 </head>
-<body class="no-js">
+<body>
+  <div class="track" aria-hidden="true"></div>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <button class="sky" id="sky" type="button" aria-label="Tap the sun to bring on the night"></button>
+  <h1 class="sr">Dan</h1>
+  <span class="font-warm" aria-hidden="true">Dan</span>
 
-  <nav class="nav" data-animate data-delay="3">
-    <a href="/" class="nav-logo">Dan</a>
-    <div class="nav-right">
-      <span id="nav-time" class="nav-time"></span>
-      <a href="mailto:dan@craftbydan.com" class="nav-cta">Get in touch</a>
-    </div>
-  </nav>
-
-  <section class="hero" aria-label="Introduction">
-    <div class="hero-inner">
-      <h1 class="hero-name" data-animate data-delay="1">Dan</h1>
-      <div class="hero-meta" data-animate data-delay="5">
-        <span>13°44'38"N 100°32'29"E</span>
-        <span>UTC+7</span>
-        <a href="https://reads.craftbydan.com" target="_blank" rel="noopener" class="meta-link"><span>Reading: Hyperfocus</span></a>
-      </div>
+  <section class="bank">
+    <div class="bank-inner">
+      <span class="label">About me</span>
+      <h2>School first,<br>side projects after.</h2>
+      <p>Now at Patumwan Demonstration School. Before that, Assumption College Primary Section.</p>
     </div>
   </section>
 
-  <section class="intro" aria-label="About">
-    <div class="container">
-      <img src="avatar.png" alt="Dan" class="avatar" data-scroll-animate>
-      <p class="intro-lead" data-scroll-animate>I build things before I know how.</p>
-      <p class="intro-sub" data-scroll-animate>Based in Bangkok.<br>Building things.</p>
+  <section class="bank">
+    <div class="bank-inner">
+      <span class="label">Where</span>
+      <h2>Bangkok.</h2>
+      <p>13°44'38"N 100°32'29"E · <span class="bkk-time">--:--</span> here</p>
     </div>
   </section>
 
-  <section class="work" aria-labelledby="now-heading">
-    <div class="container">
-      <h2 id="now-heading" class="section-label" data-scroll-animate>Now</h2>
-      <ul class="work-list">
-        <li class="work-item" data-scroll-animate>
-          <a href="https://peakread.craftbydan.com" class="work-link" target="_blank" rel="noopener">
-            <div class="work-row">
-              <span class="work-name"><img src="peakread-icon.png" alt="" class="work-icon" width="24" height="24">PeakRead</span>
-              <span class="work-arrow">
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 9 L9 2 M9 2 L9 5.5 M9 2 L5.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </div>
-            <p class="work-desc">A four-line reader that floats over your Mac. Scroll to read, press Esc, and your work is right where you left it. Coming Q1 2027.</p>
-          </a>
-        </li>
-        <li class="work-item" data-scroll-animate>
-          <a href="https://reads.craftbydan.com" class="work-link" target="_blank" rel="noopener">
-            <div class="work-row">
-              <span class="work-name">Reads · reading log</span>
-              <span class="work-arrow">
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 9 L9 2 M9 2 L9 5.5 M9 2 L5.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </div>
-            <p class="work-desc">Books and articles — notes and highlights, a trail through what I'm reading</p>
-          </a>
-        </li>
-      </ul>
+  <section class="bank">
+    <div class="bank-inner">
+      <span class="label">Outside school</span>
+      <h2>Two wheels<br>and four.</h2>
+      <p>On two, it's cycling and Tadej Pogačar of UAE Team Emirates. On four, it's F1 and Red Bull Racing.</p>
     </div>
   </section>
 
-  <section class="trex-ground" aria-label="A hidden T-Rex Runner game">
-    <p class="trex-hint"><kbd>Space</kbd> or <kbd>&uarr;</kbd> to jump</p>
-    <div class="interstitial-wrapper">
-      <div class="icon icon-offline"></div>
+  <section class="bank">
+    <div class="bank-inner">
+      <span class="label">Now</span>
+      <h2><a href="https://peakread.craftbydan.com" target="_blank" rel="noopener">PeakRead ↗</a><br><a href="https://reads.craftbydan.com" target="_blank" rel="noopener">Reads ↗</a></h2>
+      <p>A four-line reader for your Mac · A trail through what I'm reading</p>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-inner">
-        <a href="mailto:dan@craftbydan.com" class="footer-email">dan@craftbydan.com</a>
-        <div class="footer-links">
-          <a href="https://peakread.craftbydan.com" class="footer-link" target="_blank" rel="noopener">PeakRead</a>
-          <a href="https://github.com/craftbydan" class="footer-link" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://twitter.com/craftbydan" class="footer-link" target="_blank" rel="noopener">Twitter</a>
-        </div>
-      </div>
+  <section class="bank long">
+    <div class="bank-inner">
+      <span class="label">Say hi</span>
+      <h2><a href="mailto:dan@craftbydan.com">dan@craftbydan.com</a></h2>
+      <p><a href="https://github.com/craftbydan" target="_blank" rel="noopener">GitHub</a> · <a href="https://twitter.com/craftbydan" target="_blank" rel="noopener">Twitter</a></p>
     </div>
-  </footer>
+  </section>
 
-  <div id="offline-resources">
-    <img id="offline-resources-1x" src="trex/assets/default_100_percent/100-offline-sprite.png" alt="">
-    <img id="offline-resources-2x" src="trex/assets/default_200_percent/200-offline-sprite.png" alt="">
-    <template id="audio-resources">
-      <audio id="offline-sound-press" src="data:audio/mpeg;base64,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"></audio>
-      <audio id="offline-sound-hit" src="data:audio/mpeg;base64,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"></audio>
-      <audio id="offline-sound-reached" src="data:audio/mpeg;base64,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"></audio>
-    </template>
-  </div>
+<script>
+(() => {
+  // One palette, one language: flat shapes, no outlines.
+  // Two dawns. Light mode: a soft pink sunrise. Dark mode: blue hour, the market lights still on.
+  const THEMES = {
+    light: {
+      INK: '#2b1e1f', TEMPLE: '#5a3838', GOLD: '#e8a95f', GLOW: '#f7c47f',
+      SKY: ['#c9c4dc', '#e6c4c6', '#f6d3bb', '#fbe4c8'],
+      WATER_TOP: '#f2d2bb', WATER_BOT: '#d6bccb', RIPPLE: '#fff3e4', RIPPLE_DARK: '#c3978c',
+      FAR: { fill: '#f1d6c8', line: '#ead0c2' }, NEAR: { fill: '#e7c2b2', line: '#dfb8a7' },
+      TEAK: '#6b3d2c', TEAK_LIGHT: '#85503b', TEAK_DARK: '#44261c',
+      LETTER: '#2b1e1f', LETTER_SIDE: '#7a4a3a', WINDOW: '#fbe3c6',
+      BULBS: ['#ffe2a8', '#ffd08a', '#fff0c8'],
+      stars: false, sunY: -0.1, body: 'sun', sunGlow: 'rgba(255,214,160,0.75)', sunDisc: 'rgba(255,243,224,0.95)',
+      cloud: 'rgba(252,228,214,0.55)', wire: 'rgba(90,56,56,0.45)', bulbGlow: 0.25, shimmer: false,
+      ripple: [0.2, 0.55], lantern: 0.45,
+    },
+    dark: {
+      INK: '#1b1522', TEMPLE: '#2a1f2a', GOLD: '#e8a95f', GLOW: '#ffc57a',
+      SKY: ['#161b36', '#252a4d', '#3f3a5e', '#74515f', '#b9775a'],
+      WATER_TOP: '#4a3a50', WATER_BOT: '#161a30', RIPPLE: '#f3b67a', RIPPLE_DARK: '#10132a',
+      FAR: { fill: '#433d5e', line: '#3b3654' }, NEAR: { fill: '#352e49', line: '#2e2840' },
+      TEAK: '#5a3326', TEAK_LIGHT: '#774534', TEAK_DARK: '#34190f',
+      LETTER: '#f6e7d4', LETTER_SIDE: '#b27a52', WINDOW: '#ffcf8a',
+      BULBS: ['#ffd58f', '#ffb56e', '#ffe6b0'],
+      stars: true, sunY: 0.02, body: 'moon', sunGlow: 'rgba(240,150,85,0.55)', sunDisc: null,
+      cloud: 'rgba(52,46,80,0.75)', wire: 'rgba(20,14,24,0.8)', bulbGlow: 0.55, shimmer: true,
+      ripple: [0.12, 0.4], lantern: 0.9,
+    },
+  };
+  const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+  let THEME, INK, TEMPLE, GOLD, GLOW, SKY, WATER_TOP, WATER_BOT, RIPPLE, RIPPLE_DARK, FAR, NEAR;
+  let TEAK, TEAK_LIGHT, TEAK_DARK, LETTER, LETTER_SIDE, WINDOW, BULBS;
+  let chosen = null;
+  try { chosen = localStorage.getItem('dan-theme'); } catch (e) {}
+  const mode = () => chosen || (darkQuery.matches ? 'dark' : 'light');
+  function applyTheme() {
+    THEME = THEMES[mode()];
+    document.documentElement.dataset.theme = mode();
+    const btn = document.getElementById('sky');
+    if (btn) btn.setAttribute('aria-label', mode() === 'dark' ? 'Tap the moon to bring back the dawn' : 'Tap the sun to bring on the night');
+    ({ INK, TEMPLE, GOLD, GLOW, SKY, WATER_TOP, WATER_BOT, RIPPLE, RIPPLE_DARK, FAR, NEAR,
+       TEAK, TEAK_LIGHT, TEAK_DARK, LETTER, LETTER_SIDE, WINDOW, BULBS } = THEME);
+  }
+  applyTheme();
 
-  <script type="module" src="trex/trex.js"></script>
-  <script type="module" src="script.js"></script>
+  // A soft warm glow, drawn once and stamped wherever there's a light.
+  const glowSprite = (() => {
+    const g = document.createElement('canvas'); g.width = g.height = 64;
+    const x = g.getContext('2d'), r = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    r.addColorStop(0, 'rgba(255,200,125,0.9)'); r.addColorStop(0.28, 'rgba(255,170,90,0.32)'); r.addColorStop(1, 'rgba(255,150,70,0)');
+    x.fillStyle = r; x.fillRect(0, 0, 64, 64);
+    return g;
+  })();
+  function glowAt(c, x, y, r, a = 1) {
+    const op = c.globalCompositeOperation, ga = c.globalAlpha;
+    c.globalCompositeOperation = 'lighter'; c.globalAlpha = ga * a;
+    c.drawImage(glowSprite, x - r, y - r, r * 2, r * 2);
+    c.globalCompositeOperation = op; c.globalAlpha = ga;
+  }
+  const MARIGOLD = '#f0a23a', RIBBON = '#c8553d';
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const banks = [...document.querySelectorAll('.bank')];
+  const STOPS = banks.length + 1;             // the opening view + one stop per text
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let W, H, DPR, u, tu, bankY, waterY, boatL, S, travel, layers = [], rows = [], sizes = [];
+  let festoons = [], bg = null, waterGrad = null, lastW = 0, lastH = 0;
+  let target = 0, current = 0, pitch = 0, lastCam = 0;
+
+  const rng = (seed) => () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const hash = (n) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+
+  // A mirror copy of each bank text, for its reflection in the river.
+  banks.forEach((el) => {
+    const m = el.querySelector('.bank-inner').cloneNode(true);
+    m.className = 'mirror';
+    m.setAttribute('aria-hidden', 'true');
+    m.inert = true;
+    el.appendChild(m);
+  });
+
+  // Scroll → camera. The camera eases to a stop at each text, so it holds still to be read.
+  const camFor = (p) => {
+    const f = p * (STOPS - 1), i = Math.min(Math.floor(f), STOPS - 2), x = f - i;
+    return S * (i + x - Math.sin(2 * Math.PI * x) / (2 * Math.PI));
+  };
+
+  // ────────────────────────────────────────────
+  //  City
+  // ────────────────────────────────────────────
+  function makeTower(r, ws, hs) {
+    return {
+      w: (38 + r() * 80) * u * ws,
+      h: (110 + r() * r() * 300) * u * hs,
+      top: ['flat', 'flat', 'step', 'antenna', 'slant', 'dome'][Math.floor(r() * 6)],
+      lit: Array.from({ length: r() < 0.3 ? 0 : 1 + Math.floor(r() * 5) }, () => [r(), 0.15 + r() * 0.75]),
+      draw: drawTower,
+    };
+  }
+
+  function drawTower(c, cx, gy, b, col) {
+    const x = Math.round(cx - b.w / 2), w = Math.round(b.w), top = Math.round(gy - b.h);
+    const st = Math.min(12 * u, b.h * 0.1), ins = w * 0.18;
+    c.beginPath();
+    c.moveTo(x, gy);
+    if (b.top === 'step') {
+      c.lineTo(x, top + st); c.lineTo(x + ins, top + st); c.lineTo(x + ins, top);
+      c.lineTo(x + w - ins, top); c.lineTo(x + w - ins, top + st); c.lineTo(x + w, top + st);
+    } else if (b.top === 'slant') {
+      c.lineTo(x, top + st * 1.6); c.lineTo(x + w, top);
+    } else if (b.top === 'dome') {
+      c.lineTo(x, top + w / 2); c.arc(x + w / 2, top + w / 2, w / 2, Math.PI, 0);
+    } else {
+      c.lineTo(x, top); c.lineTo(x + w, top);
+    }
+    c.lineTo(x + w, gy);
+    c.fillStyle = col.fill; c.fill();
+    c.fillStyle = col.line;
+    if (b.top === 'antenna') c.fillRect(x + w / 2 - 0.5, top - 18 * u, 1.2, 18 * u);
+    c.fillStyle = WINDOW;
+    for (const [fx, fy] of b.lit) c.fillRect(Math.round(x + 4 * u + fx * (w - 11 * u)), Math.round(top + fy * b.h), Math.ceil(3 * u), Math.ceil(4 * u));
+  }
+
+  function drawMahanakhon(c, cx, gy, b, col) {
+    const w = Math.round(b.w), x = Math.round(cx - w / 2), top = Math.round(gy - b.h);
+    c.fillStyle = col.fill; c.fillRect(x, top, w, gy - top);
+    c.fillStyle = col.line;
+    const px = Math.round(w / 6), n = Math.floor((b.h * 0.9) / px);
+    for (let i = 0; i < n; i++) {
+      const k = (i * 0.9) % 8, off = k < 4 ? k : 8 - k, deep = 1 + (i % 3 === 0);
+      c.fillRect(x + Math.round(off) * px, top + i * px, px * deep, px - 1);
+    }
+  }
+
+  // ────────────────────────────────────────────
+  //  Temples on the far bank
+  // ────────────────────────────────────────────
+  function gablePath(c, cx, by, bw, ah) {
+    c.beginPath();
+    c.moveTo(cx - bw / 2, by);
+    c.quadraticCurveTo(cx - bw * 0.16, by - ah * 0.42, cx, by - ah);
+    c.quadraticCurveTo(cx + bw * 0.16, by - ah * 0.42, cx + bw / 2, by);
+    c.closePath();
+  }
+
+  function finials(c, cx, by, bw, ah, s) {
+    c.strokeStyle = GOLD; c.lineCap = 'round';
+    c.lineWidth = 2.4 * s;
+    c.beginPath();
+    c.moveTo(cx, by - ah + 2 * s);
+    c.quadraticCurveTo(cx - 1 * s, by - ah - 10 * s, cx + 7 * s, by - ah - 13 * s);
+    c.stroke();
+    c.lineWidth = 2 * s;
+    c.beginPath();
+    c.moveTo(cx - bw / 2, by); c.quadraticCurveTo(cx - bw / 2 - 7 * s, by - 1 * s, cx - bw / 2 - 7 * s, by - 10 * s);
+    c.moveTo(cx + bw / 2, by); c.quadraticCurveTo(cx + bw / 2 + 7 * s, by - 1 * s, cx + bw / 2 + 7 * s, by - 10 * s);
+    c.stroke();
+  }
+
+  function drawUbosot(c, cx, gy, o) {
+    const s = o.w / 200;
+    c.fillStyle = TEMPLE;
+    c.fillRect(cx - o.w * 0.48, gy - 8 * s, o.w * 0.96, 8 * s);
+    const wallW = o.w * 0.7, wallH = 46 * s, wy = gy - 8 * s - wallH;
+    c.fillRect(cx - wallW / 2, wy, wallW, wallH);
+    c.fillStyle = GLOW;
+    for (let k = 1; k < 6; k++) {
+      if (k === 3) continue;
+      c.fillRect(cx - wallW / 2 + (wallW * k) / 6 - 1.5 * s, wy + 12 * s, 3 * s, wallH - 12 * s);
+    }
+    c.beginPath();
+    c.moveTo(cx - 9 * s, wy + wallH); c.lineTo(cx - 9 * s, wy + 22 * s);
+    c.quadraticCurveTo(cx, wy + 10 * s, cx + 9 * s, wy + 22 * s); c.lineTo(cx + 9 * s, wy + wallH);
+    c.fill();
+    glowAt(c, cx, wy + wallH * 0.65, 40 * s, 0.8);
+    for (let k = o.tiers - 1; k >= 0; k--) {
+      const bw = o.w * (0.6 + 0.17 * k), ah = bw * 0.6, by = wy + 6 * s - k * 14 * s;
+      gablePath(c, cx, by, bw, ah);
+      c.fillStyle = TEMPLE; c.fill();
+      c.strokeStyle = GOLD; c.lineWidth = 1.6 * s; c.stroke();
+      gablePath(c, cx, by - 6 * s, bw * 0.7, ah * 0.66);
+      c.lineWidth = 0.9 * s; c.stroke();
+      finials(c, cx, by, bw, ah, s);
+    }
+  }
+
+  function drawChedi(c, cx, gy, o) {
+    const s = o.h / 300;
+    c.fillStyle = TEMPLE;
+    [[96, 10], [78, 10], [60, 10]].forEach(([w, h], i) => c.fillRect(cx - (w * s) / 2, gy - (i + 1) * h * s, w * s, h * s + 0.5));
+    const b0 = gy - 30 * s, bw = 36 * s;
+    c.beginPath();
+    c.moveTo(cx - bw, b0);
+    c.bezierCurveTo(cx - bw, b0 - 50 * s, cx - 24 * s, b0 - 78 * s, cx, b0 - 80 * s);
+    c.bezierCurveTo(cx + 24 * s, b0 - 78 * s, cx + bw, b0 - 50 * s, cx + bw, b0);
+    c.fill();
+    const hy = b0 - 92 * s;
+    c.fillRect(cx - 11 * s, hy, 22 * s, 13 * s);
+    c.beginPath();
+    c.moveTo(cx - 9 * s, hy); c.lineTo(cx, gy - o.h); c.lineTo(cx + 9 * s, hy);
+    c.fill();
+    c.strokeStyle = GOLD; c.lineWidth = 1.2 * s; c.beginPath();
+    for (let y = hy - 8 * s; y > gy - o.h * 0.82; y -= 11 * s) {
+      const hw = 9 * s * (y - (gy - o.h)) / (hy - (gy - o.h));
+      c.moveTo(cx - hw, y); c.lineTo(cx + hw, y);
+    }
+    c.moveTo(cx - bw + 2 * s, b0 - 8 * s); c.lineTo(cx + bw - 2 * s, b0 - 8 * s);
+    c.stroke();
+  }
+
+  function drawPrang(c, cx, gy, o) {
+    const s = o.h / 320;
+    c.fillStyle = TEMPLE;
+    [[112, 14], [92, 14], [74, 14]].forEach(([w, h], i) => c.fillRect(cx - (w * s) / 2, gy - (i + 1) * h * s, w * s, h * s + 0.5));
+    const y0 = gy - 42 * s, y1 = gy - o.h + 44 * s, hw0 = 31 * s;
+    const hw = (t) => hw0 * (1 - 0.82 * Math.pow(t, 1.5));
+    c.beginPath();
+    c.moveTo(cx - hw0, y0);
+    for (let t = 0; t <= 1.0001; t += 0.05) c.lineTo(cx - hw(t), lerp(y0, y1, t));
+    c.quadraticCurveTo(cx, y1 - 14 * s, cx + hw(1), y1);
+    for (let t = 1; t >= -0.0001; t -= 0.05) c.lineTo(cx + hw(t), lerp(y0, y1, t));
+    c.fill();
+    c.strokeStyle = GOLD; c.lineWidth = 1.3 * s; c.beginPath();
+    for (let i = 1; i < 8; i++) {
+      const t = i / 8, y = lerp(y0, y1, t), w = hw(t) - 1.5 * s;
+      c.moveTo(cx - w, y); c.lineTo(cx + w, y);
+    }
+    c.stroke();
+    c.lineWidth = 2 * s; c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(cx, y1 - 10 * s); c.lineTo(cx, gy - o.h);
+    c.moveTo(cx - 6 * s, gy - o.h + 12 * s); c.lineTo(cx + 6 * s, gy - o.h + 12 * s);
+    c.stroke();
+  }
+
+  function drawWatArun(c, cx, gy, o) {
+    drawPrang(c, cx - o.h * 0.36, gy, { h: o.h * 0.52 });
+    drawPrang(c, cx + o.h * 0.36, gy, { h: o.h * 0.52 });
+    drawPrang(c, cx, gy, { h: o.h });
+  }
+
+  function drawSala(c, cx, gy, o) {
+    const s = o.w / 80;
+    c.fillStyle = TEMPLE;
+    c.fillRect(cx - 40 * s, gy - 5 * s, 80 * s, 5 * s);
+    [-30, -10, 10, 30].forEach((px) => c.fillRect(cx + px * s - 1.5 * s, gy - 40 * s, 3 * s, 36 * s));
+    gablePath(c, cx, gy - 38 * s, 84 * s, 40 * s);
+    c.fill();
+    c.strokeStyle = GOLD; c.lineWidth = 0.9 * s;
+    gablePath(c, cx, gy - 43 * s, 56 * s, 25 * s); c.stroke();
+    finials(c, cx, gy - 38 * s, 84 * s, 40 * s, s);
+  }
+
+  function drawPalm(c, cx, gy, o) {
+    const s = tu, tx = cx + o.lean * s, ty = gy - o.h;
+    c.strokeStyle = TEMPLE; c.lineCap = 'round';
+    c.lineWidth = 3 * s;
+    c.beginPath(); c.moveTo(cx, gy); c.quadraticCurveTo(cx + o.lean * 0.1 * s, gy - o.h * 0.6, tx, ty); c.stroke();
+    c.lineWidth = 2 * s;
+    c.beginPath();
+    for (let i = 0; i < 7; i++) {
+      const a = -Math.PI + (i / 6) * Math.PI, len = (26 + (i % 2) * 8) * s;
+      c.moveTo(tx, ty);
+      c.quadraticCurveTo(tx + Math.cos(a) * len * 0.6, ty - 10 * s, tx + Math.cos(a) * len, ty + Math.sin(a) * len * 0.5 + 16 * s);
+    }
+    c.stroke();
+  }
+
+  function drawWall(c, cx, gy, o) {
+    const s = tu, x0 = cx - o.w / 2, h = 12 * s;
+    c.fillStyle = TEMPLE;
+    c.fillRect(x0, gy - h, o.w, h);
+    c.beginPath();
+    for (let x = x0 + 7 * s; x < x0 + o.w - 4 * s; x += 14 * s) {
+      c.moveTo(x - 3.5 * s, gy - h); c.quadraticCurveTo(x - 3 * s, gy - h - 6 * s, x, gy - h - 9 * s);
+      c.quadraticCurveTo(x + 3 * s, gy - h - 6 * s, x + 3.5 * s, gy - h);
+    }
+    c.fill();
+  }
+
+  function makeTemple(r) {
+    const pick = r();
+    if (pick < 0.22) return { w: (140 + r() * 70) * tu, tiers: 2 + (r() < 0.5), draw: drawUbosot };
+    if (pick < 0.40) { const h = (150 + r() * 90) * tu; return { w: h * 0.34, h, draw: drawChedi }; }
+    if (pick < 0.48) { const h = (140 + r() * 60) * tu; return { w: h * 0.36, h, draw: drawPrang }; }
+    if (pick < 0.60) return { w: (60 + r() * 30) * tu, draw: drawSala };
+    if (pick < 0.80) return { w: 50 * tu, h: (80 + r() * 60) * tu, lean: (r() - 0.5) * 40, draw: drawPalm };
+    return { w: (50 + r() * 110) * tu, draw: drawWall };
+  }
+
+  // A stretch of bank kept clear for a text.
+  const clearing = (x, w) => ({ x, w, draw() {} });
+
+  // ────────────────────────────────────────────
+  //  The long-tail boat, with Dan standing on it
+  // ────────────────────────────────────────────
+  // Origin at the waterline, midships. Bow points right, the way we travel.
+  function sheer(c, L, h, lift) {
+    const s = -L / 2, b = L / 2;
+    c.moveTo(s, -h - lift);
+    c.bezierCurveTo(s + L * 0.3, -h * 0.92 - lift, b - L * 0.3, -h * 0.95 - lift, b - L * 0.14, -h * 1.25 - lift);
+  }
+
+  function hullPath(c, L, h) {
+    const s = -L / 2, b = L / 2;
+    c.beginPath();
+    sheer(c, L, h, 0);
+    c.bezierCurveTo(b - L * 0.06, -h * 1.6, b - L * 0.02, -h * 2.2, b, -h * 2.7);
+    c.bezierCurveTo(b - L * 0.03, -h * 1.7, b - L * 0.05, -h * 0.4, b - L * 0.12, h * 0.4);
+    c.lineTo(s + L * 0.03, h * 0.4);
+    c.closePath();
+  }
+
+  function nameSize(h) { return Math.min(h * 2.2, H * 0.19); }
+
+  // "Dan" as standing letters: a face and a side for depth. (x, y) is the baseline centre.
+  function drawName(c, x, y, fs, face, side) {
+    const depth = Math.max(3, fs * 0.07);
+    c.font = `800 ${fs}px Inter, -apple-system, system-ui, sans-serif`;
+    if ('letterSpacing' in c) c.letterSpacing = `${-0.055 * fs}px`;
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    if (side) {
+      c.fillStyle = side;
+      for (let i = depth; i > 0; i -= 0.75) c.fillText('Dan', x + i * 0.45, y - i * 0.6);
+    }
+    c.fillStyle = face;
+    c.fillText('Dan', x, y);
+    if ('letterSpacing' in c) c.letterSpacing = '0px';
+  }
+
+  // Where the name stands in each vehicle, in that vehicle's own coordinates.
+  const boatSeat = (L, h) => ({ x: -L * 0.03, y: -h * 0.88, fs: nameSize(h) });
+
+  function drawBoat(c, L, h, t, withName) {
+    const s = -L / 2, b = L / 2, k = L / 800;
+    c.lineJoin = 'round'; c.lineCap = 'round';
+
+    // the inside of the far side, seen from a little above
+    c.beginPath();
+    sheer(c, L, h, h * 0.22);
+    c.lineTo(b - L * 0.12, -h * 1.2);
+    c.bezierCurveTo(b - L * 0.3, -h * 0.95, s + L * 0.3, -h * 0.92, s, -h);
+    c.closePath();
+    c.fillStyle = TEAK_DARK; c.fill();
+
+    if (withName) { const n = boatSeat(L, h); drawName(c, n.x, n.y, n.fs, LETTER, LETTER_SIDE); }
+
+    // engine on its pivot, the long tail into the river, tiller forward
+    c.strokeStyle = INK; c.lineWidth = Math.max(2, 3 * k);
+    c.beginPath();
+    c.moveTo(s + L * 0.01, -h * 1.35); c.lineTo(s - L * 0.2, h * 0.5);
+    c.moveTo(s + L * 0.03, -h * 1.45); c.lineTo(s + L * 0.13, -h * 1.9);
+    c.stroke();
+    c.fillStyle = INK;
+    c.beginPath(); c.roundRect(s - L * 0.035, -h * 1.7, L * 0.085, h * 0.42, 4 * k); c.fill();
+    c.fillRect(s + L * 0.005, -h * 1.3, 3 * k, h * 0.32);
+
+    // hull: teak, a lighter top plank, a thin gold trim
+    hullPath(c, L, h);
+    c.fillStyle = TEAK; c.fill();
+    c.save();
+    hullPath(c, L, h); c.clip();
+    c.beginPath();
+    sheer(c, L, h, 0);
+    c.lineTo(b, -h * 2.7); c.lineTo(b, -h * 0.9);
+    c.bezierCurveTo(b - L * 0.3, -h * 0.72, s + L * 0.3, -h * 0.7, s, -h * 0.76);
+    c.closePath();
+    c.fillStyle = TEAK_LIGHT; c.fill();
+    c.beginPath(); sheer(c, L, h, -h * 0.26);
+    c.bezierCurveTo(b - L * 0.07, -h * 1.45, b - L * 0.04, -h * 2.0, b - L * 0.02, -h * 2.5);
+    c.strokeStyle = GOLD; c.lineWidth = Math.max(1.2, 1.8 * k); c.stroke();
+    c.restore();
+
+    // garlands tied at the prow
+    garland(c, b - L * 0.004, -h * 2.6, k, t);
+
+    // a lantern on a bamboo pole near the bow
+    const lx = b - L * 0.2, ly = -h * 2.35, lw = Math.max(8, 14 * k);
+    c.strokeStyle = TEAK_DARK; c.lineWidth = Math.max(2, 3 * k);
+    c.beginPath(); c.moveTo(lx, -h * 1.1); c.lineTo(lx, ly - lw * 0.9); c.stroke();
+    c.fillStyle = GLOW;
+    c.beginPath(); c.roundRect(lx - lw / 2, ly - lw * 0.6, lw, lw * 1.2, lw * 0.4); c.fill();
+    c.fillStyle = TEAK_DARK; c.fillRect(lx - lw * 0.6, ly - lw * 0.75, lw * 1.2, lw * 0.18); c.fillRect(lx - lw * 0.6, ly + lw * 0.58, lw * 1.2, lw * 0.18);
+    glowAt(c, lx, ly, h * 1.4, THEME.lantern + (reduce ? 0 : Math.sin(t * 5.3) * 0.08));
+  }
+
+  function garland(c, tx, ty, k, t) {
+    c.lineWidth = Math.max(1.2, 1.8 * k); c.lineCap = 'round';
+    for (let j = 0; j < 3; j++) {
+      const sw = Math.sin(t * 2.4 + j * 1.3) * 4 * k;
+      c.strokeStyle = j === 1 ? RIBBON : MARIGOLD;
+      c.beginPath();
+      c.moveTo(tx, ty);
+      c.quadraticCurveTo(tx + 8 * k + sw, ty + 14 * k, tx + 3 * k + sw * 1.5, ty + (26 + j * 9) * k);
+      c.stroke();
+    }
+    c.fillStyle = MARIGOLD;
+    c.beginPath(); c.arc(tx, ty, 3.4 * k, 0, Math.PI * 2); c.fill();
+  }
+
+  // ────────────────────────────────────────────
+  //  Build the world
+  // ────────────────────────────────────────────
+  function populate(speed, seed, make, gap, landmarks, color) {
+    const r = rng(seed), items = [...landmarks];
+    let x = -W;
+    const end = travel * speed + W * 2;
+    while (x < end) {
+      const it = make(r, x);
+      const hit = landmarks.find((l) => x + it.w > l.x - l.w / 2 - 10 * u && x < l.x + l.w / 2 + 10 * u);
+      if (hit) { x = hit.x + hit.w / 2 + 10 * u; continue; }
+      it.x = x + it.w / 2;
+      items.push(it);
+      x += it.w + gap(r);
+    }
+    return { speed, items, color };
+  }
+
+  function build() {
+    W = innerWidth; H = innerHeight; lastW = W; lastH = H;
+    // Retina, but capped so a big screen never pushes more than ~4.2M pixels a frame.
+    DPR = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(4.2e6 / (W * H)));
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    u = clamp(Math.min(H / 900, W / 560), 0.6, 1.3);
+    tu = u * 0.62;
+    bankY = Math.round(H * (W < 600 ? 0.56 : 0.6));
+    waterY = Math.round(bankY + (H - bankY) * 0.66);
+    boatL = Math.min(W * (W < 600 ? 0.74 : 0.62), 820 * clamp(H / 900, 0.6, 1.3));
+
+    sizes = banks.map((el) => ({ w: el.offsetWidth, h: el.offsetHeight }));
+    const widest = Math.max(...sizes.map((z) => z.w));
+    S = Math.max(W * 1.1, widest + W * 0.45);                // distance between stops on the bank
+    travel = S * (STOPS - 1);
+
+    document.documentElement.style.setProperty('--track', ((STOPS - 1) * 120 + 100) + 'vh');
+
+    const at = (i, speed) => S * i * speed + W / 2;
+    layers = [
+      populate(0.3, 11, (r) => makeTower(r, 0.8, 0.55), (r) => (r() - 0.6) * 24 * u, [], FAR),
+      populate(0.55, 23, (r) => makeTower(r, 0.6, 0.4), (r) => (6 + r() * 40) * u, [
+        { x: at(2, 0.55) + Math.min(W * 0.32, 420 * u), w: 36 * u, h: H * 0.3, draw: drawMahanakhon },
+      ], NEAR),
+      populate(1, 37, makeTemple, (r) => (6 + r() * 30) * tu, [
+        { x: W / 2, w: 230 * tu, tiers: 3, draw: drawUbosot },
+        ...sizes.map((z, i) => clearing(at(i + 1, 1), z.w + 40 * u)),
+        { x: at(2, 1) + sizes[1].w / 2 + 260 * tu, w: 300 * tu, h: 330 * tu, draw: drawWatArun },
+      ], TEMPLE),
+    ];
+    layers.slice(0, 2).forEach((l) => l.items.sort((a, b) => b.h - a.h));
+
+    // bulb strings along the bank, kept clear of the texts
+    festoons = [];
+    const span = 150 * tu, fr = rng(71);
+    for (let x = -W; x < travel + W * 2; x += span) {
+      if (sizes.some((z, i) => Math.abs(at(i + 1, 1) - (x + span / 2)) < z.w / 2 + span * 0.6)) continue;
+      festoons.push({ x, span, h: (70 + fr() * 14) * tu, sag: (14 + fr() * 8) * tu, seed: Math.floor(fr() * 100) });
+    }
+    festoons.forEach((f, i) => { const n = festoons[i + 1]; f.last = !n || n.x - f.x > span * 1.5; });
+
+    layers.forEach((l) => (l.tiles = new Map()));
+    paintBackdrop();
+    waterGrad = ctx.createLinearGradient(0, bankY, 0, H);
+    waterGrad.addColorStop(0, WATER_TOP); waterGrad.addColorStop(1, WATER_BOT);
+
+    const r = rng(5);
+    rows = [];
+    const N = Math.round((H - bankY) / (7 * u));
+    for (let i = 0; i < N; i++) {
+      const d = Math.pow(i / N, 1.25);
+      rows.push({
+        y: Math.round(bankY + 6 + (H - bankY - 6) * Math.pow(i / N, 1.5)),
+        speed: lerp(1.02, 1.7, d),
+        dash: lerp(5, 34, d) * u,
+        period: lerp(40, 150, d) * u,
+        seed: r() * 1000,
+        alpha: lerp(THEME.ripple[0], THEME.ripple[1], d) * (i % 5 === 2 ? 0.6 : 1),
+        dark: i % 5 === 2,
+      });
+    }
+  }
+
+  // ────────────────────────────────────────────
+  //  Render
+  // ────────────────────────────────────────────
+  // Sky, stars, horizon glow and the water's base colour never change: paint them once.
+  function paintBackdrop() {
+    bg = document.createElement('canvas');
+    bg.width = canvas.width; bg.height = canvas.height;
+    const c = bg.getContext('2d', { alpha: false });
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const sky = c.createLinearGradient(0, 0, 0, bankY);
+    SKY.forEach((col, i) => sky.addColorStop(i / (SKY.length - 1), col));
+    c.fillStyle = sky; c.fillRect(0, 0, W, bankY);
+    if (THEME.stars) {
+      for (let i = 0; i < 60; i++) {
+        const sx = hash(i * 7.3) * W, sy = hash(i * 3.7) * bankY * 0.45, big = hash(i * 1.9) > 0.85;
+        c.fillStyle = `rgba(255,244,230,${(0.25 + hash(i) * 0.5) * (1 - sy / (bankY * 0.45))})`;
+        c.fillRect(sx, sy, big ? 2 : 1, big ? 2 : 1);
+      }
+    }
+    const sunX = W * 0.72, sunY = bankY + H * THEME.sunY;
+    const glow = c.createRadialGradient(sunX, sunY, 0, sunX, sunY, H * 0.55);
+    glow.addColorStop(0, THEME.sunGlow); glow.addColorStop(1, THEME.sunGlow.replace(/[\d.]+\)$/, '0)'));
+    c.fillStyle = glow; c.fillRect(0, 0, W, bankY);
+    const water = c.createLinearGradient(0, bankY, 0, H);
+    water.addColorStop(0, WATER_TOP); water.addColorStop(1, WATER_BOT);
+    c.fillStyle = water; c.fillRect(0, bankY, W, H - bankY);
+  }
+
+  // Each skyline layer is painted once into 1024px-wide tiles, then just slid across.
+  // Tiles are made just before they scroll into view and dropped once they're far behind.
+  const TILE = 1024;
+  const later = window.requestIdleCallback || ((f) => setTimeout(f, 16));
+
+  function tile(layer, i) {
+    let cv = layer.tiles.get(i);
+    if (cv) return cv;
+    cv = document.createElement('canvas');
+    cv.width = Math.ceil(TILE * DPR); cv.height = Math.ceil((bankY + 2) * DPR);
+    const c = cv.getContext('2d');
+    const x0 = i * TILE, x1 = x0 + TILE, m = 220 * u;
+    c.setTransform(DPR, 0, 0, DPR, -x0 * DPR, 0);
+    for (const it of layer.items) {
+      if (it.x + it.w / 2 + m < x0 || it.x - it.w / 2 - m > x1) continue;
+      c.save(); it.draw(c, it.x, bankY, it, layer.color); c.restore();
+    }
+    if (layer === layers[2]) drawFestoons(c, x0 - m, x1 + m);
+    layer.tiles.set(i, cv);
+    return cv;
+  }
+
+  function drawLayer(c, layer, cam) {
+    const off = cam * layer.speed, first = Math.floor(off / TILE), last = Math.floor((off + W) / TILE);
+    for (let i = first; i <= last; i++) {
+      c.drawImage(tile(layer, i), Math.round((i * TILE - off) * DPR) / DPR, 0, TILE, bankY + 2);
+    }
+    for (const k of layer.tiles.keys()) if (k < first - 2 || k > last + 2) layer.tiles.delete(k);
+    // make the next tile in either direction while the browser is idle
+    for (const i of [last + 1, first - 1]) {
+      if (layer.tiles.has(i) || layer.warming === i) continue;
+      layer.warming = i;
+      const gen = layer.tiles;
+      later(() => { if (layer.tiles === gen) tile(layer, i); layer.warming = null; });
+    }
+  }
+
+  // Strings of bulbs, strung between posts along the riverbank like a night market.
+  function eachBulb(cam, fn, onScreen) {
+    for (const f of festoons) {
+      const x0 = f.x - cam, x1 = x0 + f.span;
+      if (onScreen && (x1 < -20 || x0 > W + 20)) continue;
+      const top = bankY - f.h, n = Math.round(f.span / (13 * tu));
+      for (let i = 1; i < n; i++) {
+        const k = i / n;
+        fn(lerp(x0, x1, k), top + 4 * f.sag * k * (1 - k), f.seed + i, f);
+      }
+    }
+  }
+
+  function drawFestoons(c, from, to) {
+    for (const f of festoons) {
+      const x0 = f.x, x1 = x0 + f.span, top = bankY - f.h;
+      if (x1 < from || x0 > to) continue;
+      c.fillStyle = TEMPLE;
+      c.fillRect(x0 - 1.5 * tu, top, 3 * tu, f.h);
+      if (f.last) c.fillRect(x1 - 1.5 * tu, top, 3 * tu, f.h);
+      c.strokeStyle = THEME.wire; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x0, top); c.quadraticCurveTo((x0 + x1) / 2, top + 2 * f.sag, x1, top); c.stroke();
+    }
+    eachBulb(0, (x, y, id) => {
+      if (x < from || x > to) return;
+      glowAt(c, x, y + 2 * tu, 11 * tu, THEME.bulbGlow);
+      c.fillStyle = BULBS[id % 3];
+      c.beginPath(); c.arc(x, y + 2 * tu, Math.max(1.3, 2.2 * tu), 0, Math.PI * 2); c.fill();
+    });
+  }
+
+  function drawLightsOnWater(c, cam, t) {
+    if (!THEME.shimmer) return;
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    eachBulb(cam, (x, y, id) => {
+      if (id % 2) return;                                     // every other bulb is plenty
+      const ry = bankY + (bankY - y) * 0.55 + 4;
+      for (let j = 0; j < 4; j++) {
+        const fade = 1 - j / 4, jit = reduce ? 0 : Math.sin(t * 2.2 + id + j * 1.3) * 2 * u;
+        c.fillStyle = `rgba(255,190,110,${0.28 * fade})`;
+        c.fillRect(x - 4 * u * fade + jit, ry + j * 5 * u, 8 * u * fade, 1.5);
+      }
+    }, true);
+    c.restore();
+  }
+
+  const blob = (c, x, y, r) => { c.moveTo(x + r, y); c.arc(x, y, r, 0, Math.PI * 2); };
+
+  // ── The switch ──
+  // Hover the sun: its rays spin out. Hover the moon: it gets sleepy. Tap either and it sets
+  // behind the skyline, the other dawn fades in, and the other body rises to take its place.
+  const sky = document.getElementById('sky');
+  const snapshot = document.createElement('canvas');
+  const SET = 650, FADE = 1100;
+  let swap = null, hover = 0, hoverTo = 0, drop = 0, rise = 1, fade = 0;
+
+  sky.addEventListener('pointerenter', () => (hoverTo = 1));
+  sky.addEventListener('pointerleave', () => (hoverTo = 0));
+  sky.addEventListener('focus', () => (hoverTo = 1));
+  sky.addEventListener('blur', () => (hoverTo = 0));
+  sky.addEventListener('click', () => {
+    if (!swap) swap = { start: performance.now(), to: mode() === 'dark' ? 'light' : 'dark', switched: false };
+  });
+
+  function stepSwap(now) {
+    drop = 0; rise = 1; fade = 0;
+    if (!swap) return;
+    const e = reduce ? SET + FADE : now - swap.start;
+    if (e < SET) { const k = e / SET; drop = k * k; return; }
+    if (!swap.switched) {
+      snapshot.width = canvas.width; snapshot.height = canvas.height;
+      snapshot.getContext('2d').drawImage(canvas, 0, 0);           // the old dawn, sun already down
+      chosen = swap.to;
+      try { localStorage.setItem('dan-theme', chosen); } catch (e2) {}
+      applyTheme(); build(); onScroll();
+      swap.switched = true;
+    }
+    const k = Math.min(1, (e - SET) / FADE);
+    fade = 1 - k; rise = 1 - Math.pow(1 - k, 3);
+    if (k >= 1) swap = null;
+  }
+
+  function drawSkyBody(c, t) {
+    const moon = THEME.body === 'moon', r = (moon ? 22 : 30) * u;
+    const x = W - Math.max(72, W * 0.16), home = H * 0.15, below = bankY + r * 1.6;
+    const y = drop > 0 ? lerp(home, below, drop) : lerp(below, home, rise);
+    const s = 1 + hover * 0.12 + (reduce ? 0 : Math.sin(t * 1.6) * 0.025);
+    const R = r * s;
+
+    if (moon) {
+      glowAt(c, x, y, R * 3.2, 0.3);
+      c.fillStyle = '#f3e7d0';
+      c.beginPath(); c.arc(x, y, R, 0, Math.PI * 2); c.fill();
+      c.fillStyle = 'rgba(196,178,156,0.45)';
+      c.beginPath(); blob(c, x - R * 0.3, y - R * 0.2, R * 0.22); blob(c, x + R * 0.28, y + R * 0.25, R * 0.16); blob(c, x + R * 0.1, y - R * 0.45, R * 0.1); c.fill();
+      if (hover > 0.02) {                                             // sleepy: z z z drift up
+        c.fillStyle = `rgba(243,231,208,${hover})`;
+        c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+        for (let i = 0; i < 3; i++) {
+          const ph = (t * 0.5 + i / 3) % 1;
+          c.globalAlpha = Math.sin(ph * Math.PI);
+          c.font = `700 ${(9 + ph * 9) * u}px Inter, system-ui, sans-serif`;
+          c.fillText('z', x + R * 0.8 + ph * 26 * u, y - R * 0.6 - ph * 42 * u);
+        }
+        c.globalAlpha = 1;
+      }
+    } else {
+      glowAt(c, x, y, R * 3.4, 0.55);
+      if (hover > 0.02) {                                             // rays spin out
+        c.strokeStyle = `rgba(255,214,160,${0.9 * hover})`;
+        c.lineWidth = Math.max(1.5, 2.2 * u); c.lineCap = 'round';
+        c.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const a = t * 0.8 + (i * Math.PI) / 5;
+          c.moveTo(x + Math.cos(a) * R * 1.3, y + Math.sin(a) * R * 1.3);
+          c.lineTo(x + Math.cos(a) * R * (1.3 + 0.45 * hover), y + Math.sin(a) * R * (1.3 + 0.45 * hover));
+        }
+        c.stroke();
+      }
+      c.fillStyle = '#fff1d8';
+      c.beginPath(); c.arc(x, y, R, 0, Math.PI * 2); c.fill();
+    }
+
+    // the invisible button rides along with it
+    const hit = Math.max(26, R * 1.5);
+    sky.style.width = sky.style.height = hit * 2 + 'px';
+    sky.style.transform = `translate3d(${(x - hit).toFixed(1)}px, ${(y - hit).toFixed(1)}px, 0)`;
+  }
+
+  function render(cam, t, vel) {
+    const c = ctx;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.drawImage(bg, 0, 0, W, H);
+    drawSkyBody(c, t);                                                // behind the skyline, so it can set
+
+    c.fillStyle = THEME.cloud;
+    for (let i = 0; i < 4; i++) {
+      const cw = (140 + hash(i + 3) * 200) * u, cy = H * (0.08 + hash(i + 9) * 0.2), ch = 10 * u;
+      const span = W + cw * 2;
+      const cx = (((hash(i) * W * 1.6 - cam * 0.05 - t * 2) % span) + span) % span - cw;
+      c.beginPath();
+      c.roundRect(cx, cy, cw, ch, ch / 2);
+      c.roundRect(cx + cw * (0.2 + hash(i + 5) * 0.3), cy - ch * 0.8, cw * 0.4, ch * 1.2, ch * 0.6);
+      c.fill();
+    }
+
+    for (const layer of layers) drawLayer(c, layer, cam);
+
+    // reflections of the far bank
+    c.save();
+    c.beginPath(); c.rect(0, bankY + 2, W, H - bankY); c.clip();
+    c.globalAlpha = 0.2;
+    c.setTransform(DPR, 0, 0, -0.55 * DPR, 0, 1.55 * bankY * DPR);
+    drawLayer(c, layers[2], cam);
+    c.restore();
+
+    const bob = reduce ? 0 : Math.sin(t * 1.3) * 2.2 * u;
+    const want = clamp(-vel * 0.02, -0.035, 0.018) + (reduce ? 0 : Math.sin(t * 0.9) * 0.006);
+    pitch += (want - pitch) * 0.08;
+    const h = boatL * 0.13, bx = W / 2 + boatL * 0.06, seat = boatSeat(boatL, h);
+
+    // the boat's reflection
+    c.save();
+    c.beginPath(); c.rect(0, waterY, W, H - waterY); c.clip();
+    c.globalAlpha = 0.28;
+    c.setTransform(DPR, 0, 0, -0.7 * DPR, 0, 1.7 * waterY * DPR);
+    c.translate(bx, waterY + bob); c.rotate(pitch);
+    hullPath(c, boatL, h); c.fillStyle = TEAK; c.fill();
+    drawName(c, seat.x, seat.y, seat.fs, LETTER);
+    c.restore();
+
+    // ripple breaks through every reflection
+    c.fillStyle = waterGrad; c.globalAlpha = 0.75;
+    for (let y = bankY + 3; y < H; y += 3) c.fillRect(0, y, W, 1);
+    c.globalAlpha = 1;
+    c.fillStyle = TEMPLE; c.fillRect(0, bankY, W, 1.5);
+
+    const drift = reduce ? 0 : t * 10;
+    for (const row of rows) {
+      c.globalAlpha = row.alpha;
+      c.fillStyle = row.dark ? RIPPLE_DARK : RIPPLE;
+      const shift = cam * row.speed + drift * row.speed + row.seed;
+      for (let k = Math.floor(shift / row.period); ; k++) {
+        const x = k * row.period - shift + hash(k + row.seed) * row.period * 0.5;
+        if (x > W) break;
+        c.fillRect(Math.round(x), row.y, Math.round(row.dash * (0.4 + hash(k * 3.1 + row.seed))), 1);
+      }
+    }
+    c.globalAlpha = 1;
+    drawLightsOnWater(c, cam, t);
+
+    c.save();
+    c.beginPath(); c.rect(0, 0, W, waterY + 1); c.clip();
+    c.translate(bx, waterY + bob); c.rotate(pitch);
+    drawBoat(c, boatL, h, t, true);
+    c.restore();
+
+    // wake
+    const k = boatL / 800, px = bx - boatL * 0.7, sp = clamp(Math.abs(vel) * 0.5, 0, 1);
+    c.strokeStyle = RIPPLE; c.lineWidth = 1.4; c.lineCap = 'round';
+    c.beginPath();
+    for (let i = 0; i < 4; i++) {
+      const ph = (t * 1.6 + i / 4) % 1, len = (18 + ph * 90) * k * (0.6 + sp);
+      c.globalAlpha = (1 - ph) * 0.9;
+      c.moveTo(px - ph * 120 * k, waterY + 3 + ph * 16 * k);
+      c.lineTo(px - ph * 120 * k - len, waterY + 3 + ph * 22 * k);
+    }
+    c.stroke();
+    c.globalAlpha = 1;
+    c.beginPath();
+    const sx = bx + boatL * 0.38;
+    c.moveTo(sx - 10 * k, waterY + 2);
+    c.quadraticCurveTo(sx + 20 * k, waterY + 3, sx + (36 + sp * 30) * k, waterY + 10 * k);
+    c.moveTo(bx - boatL * 0.2, waterY + 4);
+    c.lineTo(bx + boatL * 0.25, waterY + 4);
+    c.stroke();
+  }
+
+  // The texts ride along with the bank, exactly like the temples.
+  function place(cam) {
+    banks.forEach((el, i) => {
+      const { w, h } = sizes[i];
+      const x = S * (i + 1) + W / 2 - cam - w / 2;
+      const on = x < W && x + w > 0;
+      el.style.visibility = on ? 'visible' : 'hidden';
+      if (on) el.style.transform = `translate3d(${x.toFixed(1)}px, ${bankY - h + 1}px, 0)`;
+    });
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    current = reduce ? target : current + (target - current) * (1 - Math.pow(0.002, dt));
+    const cam = camFor(current);
+    const vel = (cam - lastCam) / Math.max(dt, 0.001) / 60;
+    lastCam = cam;
+    stepSwap(now);
+    hover += (hoverTo - hover) * (1 - Math.pow(0.001, dt));
+    render(cam, now / 1000, vel);
+    if (fade > 0) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = fade;
+      ctx.drawImage(snapshot, 0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+    }
+    place(cam);
+    requestAnimationFrame(frame);
+  }
+
+  // ── Magnet: when scrolling stops, the boat is pulled to a text. Never left in between.
+  // Any real push carries on to the next stop in that direction; a tiny nudge springs back.
+  let lastY = 0, dir = 0, idle = 0, snapping = false, settled = 0, resized = false;
+  const maxScroll = () => document.documentElement.scrollHeight - innerHeight;
+
+  function snap() {
+    const max = maxScroll();
+    if (max <= 0) return;
+    const f = (scrollY / max) * (STOPS - 1), base = Math.floor(f), frac = f - base;
+    let stop = Math.round(f);
+    if (dir > 0 && frac > 0.08) stop = base + 1;
+    if (dir < 0 && frac < 0.92) stop = base;
+    stop = clamp(stop, 0, STOPS - 1);
+    settled = stop;
+    const y = Math.round((max * stop) / (STOPS - 1));
+    if (Math.abs(y - scrollY) < 2) { snapping = false; return; }
+    snapping = true;
+    scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
+  function onScroll() {
+    const max = maxScroll();
+    target = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+    if (resized) { resized = false; dir = 0; }
+    else if (!snapping && scrollY !== lastY) dir = Math.sign(scrollY - lastY);
+    lastY = scrollY;
+    clearTimeout(idle);
+    idle = setTimeout(snap, 140);   // idempotent: once we're resting on a stop it does nothing
+  }
+
+  function clock() {
+    const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' }).format(new Date());
+    document.querySelectorAll('.bkk-time').forEach((el) => (el.textContent = time));
+  }
+
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  scrollTo(0, 0);
+  addEventListener('load', () => scrollTo(0, 0));
+  addEventListener('scroll', onScroll, { passive: true });
+  darkQuery.addEventListener('change', () => { if (!chosen) { applyTheme(); build(); onScroll(); } });
+  let resizing = 0;
+  // A resize (rotating a phone, the address bar sliding away) nudges the stops by a few pixels.
+  // That's not the visitor scrolling, so stay on the text they were reading.
+  addEventListener('resize', () => {
+    resized = true; dir = 0;
+    clearTimeout(resizing);
+    resizing = setTimeout(() => {
+      if (innerWidth !== lastW || Math.abs(innerHeight - lastH) > 120) build();
+      resized = true;                                   // the scroll this causes isn't the visitor's either
+      scrollTo(0, Math.round((maxScroll() * settled) / (STOPS - 1)));
+      target = settled / (STOPS - 1);
+    }, 150);
+  });
+  clock(); setInterval(clock, 30000);
+  build(); onScroll(); current = target; lastCam = camFor(current);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { build(); onScroll(); });
+  requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>
